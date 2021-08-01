@@ -64,6 +64,6 @@ for pos , item in zip(postion,texts):
     title = pos.replace('.mp4','')
     print(item)
     textg(item,  title)
-    # audioGenerator(string_lista , i , title)
+    audioGenerator(string_lista , i , title)
     i += 1
   
