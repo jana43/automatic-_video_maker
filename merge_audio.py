@@ -10,7 +10,7 @@ print(audios)
 final = []
 i = 0
 for item in audios:
-    sound = AudioSegment.from_file(f'audioclip/{item}', format="wav")
+    sound = AudioSegment.from_file(f'audioclip/{item}', format="mp3")
     overlay = layer.overlay(sound , position = i)
     final.append(overlay)
     i = i+1

@@ -3,6 +3,8 @@ import textwrap
 import os
 import httplib2
 from urllib.parse import urlencode, quote # For URL creation
+from gtts import gTTS, lang 
+
 
 # To play wave files
 import pygame
@@ -141,59 +143,25 @@ def middle(texts ,i ,title):
 
 
 def audioGenerator(string_lista,i, title):
-# Mary server informations
-    mary_host = "localhost"
-    mary_port = "59125"
-    text = string_lista[i]
-    query_hash = {"INPUT_TEXT":text,
-                  "INPUT_TYPE":"TEXT", # Input text
-                  "LOCALE":"en_US",
-                  "VOICE":"dfki-spike-hsmm", # Voice informations  (need to be compatible)
-                  "OUTPUT_TYPE":"AUDIO",
-                  "AUDIO":"WAVE",
-                  "EFFECTS":{
-                      "effect_chorus_selected":"delay1:466;amp1:0.5"
-                  } # Audio informations (need both)
-                  }
-    query = urlencode(query_hash)
-    print("query = \"http://%s:%s/process?%s\"" % (mary_host, mary_port, query))
-    
-    # Run the query to mary http server
-    h_mary = httplib2.Http()
-    resp, content = h_mary.request("http://%s:%s/process?" % (mary_host, mary_port), "POST", query)
-    
-    #  Decode the wav file or raise an exception if no wav files
-    if (resp["content-type"] == "audio/x-wav"):
-    
-        # Write the wav file
-        f = open(f"audioclip/{title}.wav", "wb")
-        f.write(content)
-        f.close()
-    
-        # Play the wav file
-        pygame.mixer.init(frequency=16000) # Initialise the mixer
-        s = pygame.mixer.Sound(f"audioclip/{title}.wav")
-        s.play()
-        pygame.time.wait(int(math.ceil(s.get_length() * 1000)))
-        
-    
-    else:
-        raise Exception(content)
+    speech = gTTS(text = string_lista[i], lang = "en-uk", slow = False)  
+    speech.save(f'audioclip/{title}.mp3')
+          
+
 
 i =0 
 postion = os.listdir('videoclip')
 for pos in postion:
     print(pos)
     title = pos.replace('.mp4','')
-    if 'right.mp4' in pos:
+    if 'rightalone.mp4' in pos:
         left(string_list , i,title)
         audioGenerator(string_lista , i , title)
         i = i+1
-    elif 'left.mp4' in pos:
+    elif 'leftalone.mp4' in pos:
         right(string_list, i,title)
         audioGenerator(string_lista , i , title)
         i = i+1
-    elif 'middle.mp4' in pos:
+    elif 'middlealone.mp4' in pos:
         middle(texts, i,title)
         audioGenerator(string_lista , i , title)
         i = i+1
